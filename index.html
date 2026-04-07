@@ -55,7 +55,7 @@ html, body {
     white-space: nowrap;
 }
 
-/* SMALL ACCENT DOT */
+/* DOT BASE */
 .btn::before {
     content: "";
     position: absolute;
@@ -66,12 +66,21 @@ html, body {
     width: 10px;
     height: 10px;
 
-    background: linear-gradient(135deg, #40e100, #ffd000);
     border-radius: 50%;
     opacity: 0.9;
 }
 
-/* LABEL BOX */
+/* POSITIVE */
+.btn.positive::before {
+    background: linear-gradient(135deg, #40e100, #ffd000);
+}
+
+/* NEGATIVE */
+.btn.negative::before {
+    background: linear-gradient(135deg, #ff3b3b, #ff0000);
+}
+
+/* LABEL */
 .label-box {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
@@ -89,7 +98,6 @@ html, body {
     font-weight: 900;
 }
 
-/* COLORS */
 .green { color: #40e100; }
 .red { color: #ff3b3b; }
 
@@ -122,6 +130,7 @@ html, body {
 
 <script>
 const container = document.getElementById("container");
+
 const buttons = [
     document.getElementById("b1"),
     document.getElementById("b2"),
@@ -170,10 +179,14 @@ async function updateData() {
         const p = periods[i];
 
         const index = klines.length - p.h;
-        const past = parseFloat(klines[index][4]); // CLOSE price
+        const past = parseFloat(klines[index][4]); // CLOSE
 
         const change = ((current - past) / past) * 100;
         const positive = change >= 0;
+
+        // DOT COLOR
+        buttons[i].classList.remove("positive", "negative");
+        buttons[i].classList.add(positive ? "positive" : "negative");
 
         buttons[i].innerHTML = `
             <div class="label-box">${p.label}</div>
@@ -225,7 +238,7 @@ async function loop() {
         await sleep(30000);
 
         hideSequence();
-        await sleep(90000); // total = 120s
+        await sleep(90000); // total cycle = 120s
     }
 }
 
